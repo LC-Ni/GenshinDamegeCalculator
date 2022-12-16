@@ -1,0 +1,116 @@
+/*
+h1 {
+  background-color: yellow;
+}
+
+label {
+  display: block;
+  float: left;
+  text-align: right;
+  width: 20%;
+}
+
+input {
+  width: 75%;
+}
+
+#button {
+  text-align: center;
+}
+
+.btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14pt;
+  height: 4ex;
+  width: 6em;
+  border-radius: 10px;
+  color: white;
+  background-color: blue;
+}
+
+#message {
+  border-style: solid;
+  border-color: grey;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th, td {
+  border: solid;
+}
+
+td.num {
+  text-align: right;
+} */
+
+body {
+  background: #333;
+  font-family: "メイリオ";
+}
+
+.tab-container {
+  width: 100%;
+}
+
+.tab-item {
+  width: 50%;
+  height: 50px;
+  color: #888;
+  border: 2px solid;
+  box-sizing: border-box;
+  float: left;
+  display: block;
+  padding: 10px .5em;
+  text-align: center;
+  font-weight: bold;
+}
+
+.tab-item#left-label{
+  border-color: #888 #fff #fff #888;
+  border-radius: 9px 0px 9px 0px;
+}
+
+.tab-item#right-label{
+  border-color: #888 #888 #fff #fff;
+  border-radius: 0px 9px 0px 9px;
+}
+
+.tab-container input:checked + .tab-item {
+  color: #fff;
+  border-bottom: none;
+}
+
+.tab-container input#left:checked + .tab-item#left-label{
+  border-color: #fff;
+  border-radius: 9px 0 0 0;
+  border-right: none;
+}
+
+.tab-container input#right:checked + .tab-item#right-label{
+  border-color: #fff;
+  border-radius: 0 9px 0 0;
+  border-left: none;
+}
+
+input[name="tab-item"] {
+  display: none;
+}
+
+.tab-content {
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 0 0 9px 9px;
+  border-top: none;
+  display: none;
+  padding: 20px 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+#left:checked ~ #left-content,
+#right:checked ~ #right-content {
+  display: block;
+}
