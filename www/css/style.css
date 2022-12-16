@@ -46,6 +46,10 @@ td.num {
   text-align: right;
 } */
 
+html{
+  font-size: 62.5%;
+}
+
 body {
   background: #333;
   font-family: "メイリオ";
@@ -53,6 +57,11 @@ body {
 
 .tab-container {
   width: 100%;
+  font-size: 1.6rem;
+}
+
+input[name="tab-item"] {
+  display: none;
 }
 
 .tab-item {
@@ -69,39 +78,40 @@ body {
 }
 
 .tab-item#left-label{
-  border-color: #888 #fff #fff #888;
+  border-color: #888 #f5f5f5 #f5f5f5 #888;
   border-radius: 9px 0px 9px 0px;
 }
 
 .tab-item#right-label{
-  border-color: #888 #888 #fff #fff;
+  border-color: #888 #888 #f5f5f5 #f5f5f5;
   border-radius: 0px 9px 0px 9px;
 }
 
 .tab-container input:checked + .tab-item {
-  color: #fff;
+  color: #f5f5f5;
   border-bottom: none;
 }
 
 .tab-container input#left:checked + .tab-item#left-label{
-  border-color: #fff;
+  border-color: #f5f5f5;
   border-radius: 9px 0 0 0;
   border-right: none;
 }
 
 .tab-container input#right:checked + .tab-item#right-label{
-  border-color: #fff;
+  border-color: #f5f5f5;
   border-radius: 0 9px 0 0;
   border-left: none;
 }
 
-input[name="tab-item"] {
-  display: none;
+#left:checked ~ #left-content,
+#right:checked ~ #right-content {
+  display: block;
 }
 
 .tab-content {
-  color: #fff;
-  border: 2px solid #fff;
+  color: #f5f5f5;
+  border: 2px solid #f5f5f5;
   border-radius: 0 0 9px 9px;
   border-top: none;
   display: none;
@@ -110,7 +120,23 @@ input[name="tab-item"] {
   overflow: hidden;
 }
 
-#left:checked ~ #left-content,
-#right:checked ~ #right-content {
-  display: block;
+.tab-content div {
+  text-align: center;
+  display: flex;
+  padding: 0 1.5em;
+}
+
+.btn {
+  width: calc(100% / 2);
+  height: 3em;
+  color: #f5f5f5;
+  background: #444;
+  border: 1px solid #888;
+  border-radius: 9px 9px 9px 9px;
+  margin: 1em .5em 0;
+  transition: .6s ease-out;
+}
+
+.btn:hover{
+  background: #333;
 }
