@@ -66,25 +66,25 @@ input[name="tab-item"] {
 
 .tab-item {
   width: 50%;
-  height: 50px;
+  height: 4.6rem;
   color: #888;
-  border: 2px solid;
+  border: .2rem solid;
   box-sizing: border-box;
   float: left;
   display: block;
-  padding: 10px .5em;
+  padding: 1rem 0;
   text-align: center;
   font-weight: bold;
 }
 
 .tab-item#left-label{
   border-color: #888 #f5f5f5 #f5f5f5 #888;
-  border-radius: 9px 0px 9px 0px;
+  border-radius: .9rem 0 .9rem;
 }
 
 .tab-item#right-label{
   border-color: #888 #888 #f5f5f5 #f5f5f5;
-  border-radius: 0px 9px 0px 9px;
+  border-radius: 0 .9rem 0;
 }
 
 .tab-container input:checked + .tab-item {
@@ -94,13 +94,13 @@ input[name="tab-item"] {
 
 .tab-container input#left:checked + .tab-item#left-label{
   border-color: #f5f5f5;
-  border-radius: 9px 0 0 0;
+  border-radius: .9rem 0 0;
   border-right: none;
 }
 
 .tab-container input#right:checked + .tab-item#right-label{
   border-color: #f5f5f5;
-  border-radius: 0 9px 0 0;
+  border-radius: 0 .9rem 0 0;
   border-left: none;
 }
 
@@ -111,11 +111,11 @@ input[name="tab-item"] {
 
 .tab-content {
   color: #f5f5f5;
-  border: 2px solid #f5f5f5;
-  border-radius: 0 0 9px 9px;
+  border: 0.2rem solid #f5f5f5;
+  border-radius: 0 0 .9rem .9rem;
   border-top: none;
   display: none;
-  padding: 20px 0;
+  padding: 0 0 1.2rem;
   text-align: center;
   overflow: hidden;
 }
@@ -123,7 +123,7 @@ input[name="tab-item"] {
 .tab-content div {
   text-align: center;
   display: flex;
-  padding: 0 1.5em;
+  padding: 0 .6rem;
 }
 
 .btn {
@@ -131,12 +131,48 @@ input[name="tab-item"] {
   height: 3em;
   color: #f5f5f5;
   background: #444;
-  border: 1px solid #888;
-  border-radius: 9px 9px 9px 9px;
-  margin: 1em .5em 0;
+  border: 0.1rem solid #888;
+  border-radius: .9rem;
+  margin: 1.2rem .6rem 0;
   transition: .6s ease-out;
 }
 
 .btn:hover{
   background: #333;
+}
+
+table {
+  user-select: none;
+  width: 100%;
+  border: .1rem solid;
+  border-spacing: 0;
+  border-radius: .9rem;
+  border-collapse: separate;
+  margin: 1.2rem .6rem 0;
+  text-align: center;
+  font-size: .8rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+table th,
+table td {
+  border-right: .1rem solid;
+  border-bottom: .1rem solid;
+  padding: .4rem 1rem;
+  vertical-align: middle;
+}
+
+table th:last-child,
+table td:last-child {
+  border-right: none;
+}
+
+table tr:last-child th,
+table tr:last-child td {
+  border-bottom: none;
+}
+
+td.num {
+  text-align: right;
 }

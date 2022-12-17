@@ -11,7 +11,37 @@
     <script src="keys.js"></script>
     <script>
         let ncmb = new NCMB(appKey, clientKey);
-        const db = "Genshin";
+
+        function fetchAll(db) {
+            let TestDataClass = ncmb.DataStore(db);
+            TestDataClass.order("name", false).fetchAll()
+                .then(function(results) {
+                    showResults(results);
+                })
+        }
+
+        function fetchAll(db, part) {
+            let TestDataClass = ncmb.DataStore(db);
+            TestDataClass.equalTo("part", part).order("name", false).fetchAll()
+                .then(function(results) {
+                    showResults(results);
+                })
+        }
+
+        function showResults(results) {
+            let msg = "<table><tr><th>キャラ名</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+            for (let i = 0; i < results.length; i++) {
+                msg += "<tr>";
+                msg += "<td>" + results[i].name + "</td>";
+                msg += "<td class='num'>" + results[i].atk + "</td>";
+                msg += "<td class='num'>" + Math.round(results[i].ATK * 10000) / 100 + "</td>";
+                msg += "<td class='num'>" + Math.round(results[i].CRIT_Rate * 10000) / 100 + "</td>";
+                msg += "<td class='num'>" + Math.round(results[i].CRIT_DMG * 10000) / 100 + "</td>";
+                msg += "</tr>";
+            }
+            msg += "</table>";
+            $("#message").html(msg);
+        }
     </script>
 </head>
 
@@ -23,16 +53,17 @@
         <label id="right-label" class="tab-item" for="right">ダメージ計算</label>
         <div id="left-content" class="tab-content">
             <div id="button">
-                <button class="btn" onclick="ff()">キャラ</button>
-                <button class="btn" onclick="ff()">武器</button>
+                <button class="btn" onclick="fetchAll('Character')">キャラ</button>
+                <button class="btn" onclick="fetchAll('Weapons')">武器</button>
             </div>
             <div id="button">
-                <button class="btn" onclick="ff()">花</button>
-                <button class="btn" onclick="ff()">羽</button>
-                <button class="btn" onclick="ff()">砂</button>
-                <button class="btn" onclick="ff()">杯</button>
-                <button class="btn" onclick="ff()">冠</button>
+                <button class="btn" onclick="fetchAll('Artifacts', '花')">花</button>
+                <button class="btn" onclick="fetchAll('Artifacts', '羽')">羽</button>
+                <button class="btn" onclick="fetchAll('Artifacts', '砂')">砂</button>
+                <button class="btn" onclick="fetchAll('Artifacts', '杯')">杯</button>
+                <button class="btn" onclick="fetchAll('Artifacts', '冠')">冠</button>
             </div>
+            <div id="message"></div>
         </div>
         <div id="right-content" class="tab-content">
             右のタブの内容
