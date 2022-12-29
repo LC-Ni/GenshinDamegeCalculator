@@ -29,6 +29,7 @@
         }
 
         function showResults(results) {
+            // 表の見出し　キャラ名　可変式に＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
             let msg = "<table><tr><th>キャラ名</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
             for (let i = 0; i < results.length; i++) {
                 msg += "<tr>";
@@ -41,6 +42,31 @@
             }
             msg += "</table>";
             $("#message").html(msg);
+        }
+
+        function fetchAllMenu(db) {
+            let TestDataClass = ncmb.DataStore(db);
+            TestDataClass.order("name", false).fetchAll()
+                .then(function(results) {
+                    menuResults(db, results);
+                })
+        }
+
+        function menuResults(db, results) {
+            let msg = "<option value='' hidden>未選択</option>";
+            for (let i = 0; i < results.length; i++) {
+                msg += "<option value=" + results[i].name + ">" + results[i].name + "</option>"
+            }
+            switch (db) {
+                case 'Character':
+                    $("#menu-character").html(msg);
+                    break;
+                case 'Weapons':
+                    $("#menu-weapon").html(msg);
+                    break;
+                default:
+                    console.log('Out-of-case element "' + db + '" to menuResults().');
+            }
         }
     </script>
 </head>
@@ -66,7 +92,18 @@
             <div id="message"></div>
         </div>
         <div id="right-content" class="tab-content">
-            右のタブの内容
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-character">
+                        <script>fetchAllMenu("Character")</script>
+                    </select>
+                </div>
+                <div class="menu-select menu">
+                    <select required id="menu-weapon">
+                        <script>fetchAllMenu("Weapons")</script>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </body>
