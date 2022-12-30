@@ -48,11 +48,19 @@
             let TestDataClass = ncmb.DataStore(db);
             TestDataClass.order("name", false).fetchAll()
                 .then(function(results) {
-                    menuResults(db, results);
+                    menuResults(db, results, null);
                 })
         }
 
-        function menuResults(db, results) {
+        function fetchAllMenu(db, part) {
+            let TestDataClass = ncmb.DataStore(db);
+            TestDataClass.equalTo("part", part).order("name", false).fetchAll()
+                .then(function(results) {
+                    menuResults(db, results, part);
+                })
+        }
+
+        function menuResults(db, results, part) {
             let msg = "<option value='' hidden>未選択</option>";
             for (let i = 0; i < results.length; i++) {
                 msg += "<option value=" + results[i].name + ">" + results[i].name + "</option>"
@@ -64,8 +72,29 @@
                 case 'Weapons':
                     $("#menu-weapon").html(msg);
                     break;
+                case 'Artifacts':
+                    switch (part) {
+                        case '花':
+                            $("#menu-artifact-1").html(msg);
+                            break;
+                        case '羽':
+                            $("#menu-artifact-2").html(msg);
+                            break;
+                        case '砂':
+                            $("#menu-artifact-3").html(msg);
+                            break;
+                        case '杯':
+                            $("#menu-artifact-4").html(msg);
+                            break;
+                        case '冠':
+                            $("#menu-artifact-5").html(msg);
+                            break;
+                        default:
+                            console.log('Out-of-case element "' + part + '" to menuResults(part).');
+                    }
+                    break;
                 default:
-                    console.log('Out-of-case element "' + db + '" to menuResults().');
+                    console.log('Out-of-case element "' + db + '" to menuResults(db).');
             }
         }
     </script>
@@ -101,6 +130,41 @@
                 <div class="menu-select menu">
                     <select required id="menu-weapon">
                         <script>fetchAllMenu("Weapons")</script>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-artifact-1">
+                        <script>fetchAllMenu("Artifacts", "花")</script>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-artifact-2">
+                        <script>fetchAllMenu("Artifacts", "羽")</script>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-artifact-3">
+                        <script>fetchAllMenu("Artifacts", "砂")</script>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-artifact-4">
+                        <script>fetchAllMenu("Artifacts", "杯")</script>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="menu-select menu">
+                    <select required id="menu-artifact-5">
+                        <script>fetchAllMenu("Artifacts", "冠")</script>
                     </select>
                 </div>
             </div>
