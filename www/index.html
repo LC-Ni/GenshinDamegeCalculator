@@ -11,13 +11,17 @@
     <script src="keys.js"></script>
     <script>
         let ncmb = new NCMB(appKey, clientKey);
+        let element = [
+            ["Character", "menu-character"],
+            ["Weapons", "menu-weapon"]
+        ];
 
         function fetchAll(db) {
             let TestDataClass = ncmb.DataStore(db);
             TestDataClass.order("name", false).fetchAll()
                 .then(function(results) {
                     showResults(results);
-                })
+                });
         }
 
         function fetchAll(db, part) {
@@ -25,7 +29,7 @@
             TestDataClass.equalTo("part", part).order("name", false).fetchAll()
                 .then(function(results) {
                     showResults(results);
-                })
+                });
         }
 
         function showResults(results) {
@@ -49,7 +53,7 @@
             TestDataClass.order("name", false).fetchAll()
                 .then(function(results) {
                     menuResults(db, results, null);
-                })
+                });
         }
 
         function fetchAllMenu(db, part) {
@@ -57,13 +61,13 @@
             TestDataClass.equalTo("part", part).order("name", false).fetchAll()
                 .then(function(results) {
                     menuResults(db, results, part);
-                })
+                });
         }
 
         function menuResults(db, results, part) {
             let msg = "<option value='' hidden>未選択</option>";
             for (let i = 0; i < results.length; i++) {
-                msg += "<option value=" + results[i].name + ">" + results[i].name + "</option>"
+                msg += "<option value='" + results[i].name + "'>" + results[i].name + "</option>"
             }
             switch (db) {
                 case 'Character':
@@ -97,6 +101,57 @@
                     console.log('Out-of-case element "' + db + '" to menuResults(db).');
             }
         }
+
+        function search(db, tab) {
+            let chara = document.getElementById(tab).value;
+            let TestDataClass = ncmb.DataStore(db);
+            return TestDataClass.equalTo("name", chara).fetchAll()
+                .then(function(results) {
+                    return results;
+                });
+        }
+
+        async function sumTotal(type) {
+            let total = 0;
+            for (let i = 0; i < element.length; i++) {
+                total += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            switch (type) {
+                                case 'atk':
+                                    return results[0].atk;
+                                    break;
+                                case 'ATK':
+                                    return Math.round(results[0].ATK * 10000) / 100;
+                                    break;
+                                case 'CRIT_Rate':
+                                    return Math.round(results[0].CRIT_Rate * 10000) / 100;
+                                    break;
+                                case 'CRIT_DMG':
+                                    return Math.round(results[0].CRIT_DMG * 10000) / 100;
+                                    break;
+                                default:
+                                    console.log('Out-of-case element "' + type + '" to sumTotal(type).');
+                            }
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            return total;
+        }
+
+        async function totalResults() {
+            let msg = "<table><tr><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+            msg += "<tr>";
+            msg += "<td class='num'>" + await sumTotal("atk") + "</td>";
+            msg += "<td class='num'>" + await sumTotal("ATK") + "</td>";
+            msg += "<td class='num'>" + await sumTotal("CRIT_Rate") + "</td>";
+            msg += "<td class='num'>" + await sumTotal("CRIT_DMG") + "</td>";
+            msg += "</tr>";
+            msg += "</table>";
+            $("#total").html(msg);
+        }
     </script>
 </head>
 
@@ -123,12 +178,12 @@
         <div id="right-content" class="tab-content">
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-character">
+                    <select required id="menu-character" onchange="totalResults()">
                         <script>fetchAllMenu("Character")</script>
                     </select>
                 </div>
                 <div class="menu-select menu">
-                    <select required id="menu-weapon">
+                    <select required id="menu-weapon" onchange="totalResults()">
                         <script>fetchAllMenu("Weapons")</script>
                     </select>
                 </div>
@@ -167,6 +222,22 @@
                         <script>fetchAllMenu("Artifacts", "冠")</script>
                     </select>
                 </div>
+            </div>
+            <div id="total">
+                <table>
+                    <tr>
+                        <th>攻撃</th>
+                        <th>攻撃&lpar;%&rpar;</th>
+                        <th>会心率&lpar;%&rpar;</th>
+                        <th>会心ダメ&lpar;%&rpar;</th>
+                    </tr>
+                    <tr>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
