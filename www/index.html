@@ -20,7 +20,7 @@
             let TestDataClass = ncmb.DataStore(db);
             TestDataClass.order("name", false).fetchAll()
                 .then(function(results) {
-                    showResults(results);
+                    showResults(db, null, results);
                 });
         }
 
@@ -28,13 +28,25 @@
             let TestDataClass = ncmb.DataStore(db);
             TestDataClass.equalTo("part", part).order("name", false).fetchAll()
                 .then(function(results) {
-                    showResults(results);
+                    showResults(db, part, results);
                 });
         }
 
-        function showResults(results) {
-            // 表の見出し　キャラ名　可変式に＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
-            let msg = "<table><tr><th>キャラ名</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+        function showResults(db, part, results) {
+            let msg = "";
+            switch (db) {
+                case 'Character':
+                    msg = "<table><tr><th>キャラ</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+                    break;
+                case 'Weapons':
+                    msg = "<table><tr><th>武器</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+                    break;
+                case 'Artifacts':
+                    msg = "<table><tr><th>" + part + "</th><th>攻撃</th><th>攻撃&lpar;%&rpar;</th><th>会心率&lpar;%&rpar;</th><th>会心ダメ&lpar;%&rpar;</th></tr>";
+                    break;
+                default:
+                    console.log('Out-of-case element "' + db + '" to showResults(db).');
+            }
             for (let i = 0; i < results.length; i++) {
                 msg += "<tr>";
                 msg += "<td>" + results[i].name + "</td>";
