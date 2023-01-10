@@ -139,13 +139,13 @@
                                     return results[0].atk;
                                     break;
                                 case 'ATK':
-                                    return Math.round(results[0].ATK * 10000) / 100;
+                                    return results[0].ATK;
                                     break;
                                 case 'CRIT_Rate':
-                                    return Math.round(results[0].CRIT_Rate * 10000) / 100;
+                                    return results[0].CRIT_Rate;
                                     break;
                                 case 'CRIT_DMG':
-                                    return Math.round(results[0].CRIT_DMG * 10000) / 100;
+                                    return results[0].CRIT_DMG;
                                     break;
                                 default:
                                     console.log('Out-of-case element "' + type + '" to sumTotal(type).');
@@ -155,7 +155,11 @@
                         }
                     });
             }
-            return total;
+            if (type == 'atk') {
+                return total;
+            } else {
+                return Math.round(total * 10000) / 100;
+            }
         }
 
         async function totalResults() {
@@ -168,6 +172,139 @@
             msg += "</tr>";
             msg += "</table>";
             $("#total").html(msg);
+        }
+
+        async function attack() {
+            let atkBase = 0;
+            for (let i = 0; i < 2; i++) {
+                atkBase += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            return results[0].atk;
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            let atkRemain = 0;
+            for (let i = 2; i < element.length; i++) {
+                atkRemain += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            return results[0].atk;
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            let atkval = 0;
+            for (let i = 0; i < element.length; i++) {
+                atkval += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            return results[0].ATK;
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            return atkBase * (1 + atkval) + atkRemain;
+        }
+
+        async function calculateResults() {
+            let attackVal = await attack();
+            let firstHit_DMG = await search(element[0][0], element[0][1])
+                .then(function(results) {
+                    try {
+                        return results[0].DMG_1stHit;
+                    } catch {
+                        return 0;
+                    }
+                });
+            let secondHit_DMG = await search(element[0][0], element[0][1])
+                .then(function(results) {
+                    try {
+                        return results[0].DMG_2ndHit;
+                    } catch {
+                        return 0;
+                    }
+                });
+            let thirdHit_DMG = await search(element[0][0], element[0][1])
+                .then(function(results) {
+                    try {
+                        return results[0].DMG_3rdHit;
+                    } catch {
+                        return 0;
+                    }
+                });
+            let skill_DMG = await search(element[0][0], element[0][1])
+                .then(function(results) {
+                    try {
+                        return results[0].DMG_skill;
+                    } catch {
+                        return 0;
+                    }
+                });
+            let burst_DMG = await search(element[0][0], element[0][1])
+                .then(function(results) {
+                    try {
+                        return results[0].DMG_burst;
+                    } catch {
+                        return 0;
+                    }
+                });
+            let CR = 0;
+            for (let i = 0; i < element.length; i++) {
+                CR += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            return results[0].CRIT_Rate;
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            let CD = 0;
+            for (let i = 0; i < element.length; i++) {
+                CD += await search(element[i][0], element[i][1])
+                    .then(function(results) {
+                        try {
+                            return results[0].CRIT_DMG;
+                        } catch {
+                            return 0;
+                        }
+                    });
+            }
+            let msg = "<table><tr><th></th><th>通常1段目</th><th>通常2段目</th><th>通常3段目</th><th>元素スキル</th><th>元素爆発</th></tr>";
+            msg += "<tr>";
+            msg += "<th>非会心</th>";
+            msg += "<td class='num'>" + Math.round(attackVal * firstHit_DMG) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * secondHit_DMG) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * thirdHit_DMG) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * skill_DMG) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * burst_DMG) + "</td>";
+            msg += "</tr>";
+
+            msg += "<tr>";
+            msg += "<th>会心</th>";
+            msg += "<td class='num'>" + Math.round(attackVal * firstHit_DMG * (1 + CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * secondHit_DMG * (1 + CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * thirdHit_DMG * (1 + CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * skill_DMG * (1 + CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * burst_DMG * (1 + CD)) + "</td>";
+            msg += "</tr>";
+
+            msg += "<tr>";
+            msg += "<th>期待値</th>";
+            msg += "<td class='num'>" + Math.round(attackVal * firstHit_DMG * (1 + CR * CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * secondHit_DMG * (1 + CR * CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * thirdHit_DMG * (1 + CR * CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * skill_DMG * (1 + CR * CD)) + "</td>";
+            msg += "<td class='num'>" + Math.round(attackVal * burst_DMG * (1 + CR * CD)) + "</td>";
+            msg += "</tr>";
+
+            msg += "</table>";
+            $("#calculator").html(msg);
         }
     </script>
 </head>
@@ -195,47 +332,47 @@
         <div id="right-content" class="tab-content">
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-character" onchange="totalResults()">
+                    <select required id="menu-character" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Character")</script>
                     </select>
                 </div>
                 <div class="menu-select menu">
-                    <select required id="menu-weapon" onchange="totalResults()">
+                    <select required id="menu-weapon" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Weapons")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-1" onchange="totalResults()">
+                    <select required id="menu-artifact-1" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Artifacts", "花")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-2" onchange="totalResults()">
+                    <select required id="menu-artifact-2" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Artifacts", "羽")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-3" onchange="totalResults()">
+                    <select required id="menu-artifact-3" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Artifacts", "砂")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-4" onchange="totalResults()">
+                    <select required id="menu-artifact-4" onchange="totalResults();calculateResults()">
                         <script>fetchAllMenu("Artifacts", "杯")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-5" onchange="totalResults()">
+                    <select required id="menu-artifact-5" onchange="totalResults(); calculateResults()">
                         <script>fetchAllMenu("Artifacts", "冠")</script>
                     </select>
                 </div>
@@ -249,6 +386,42 @@
                         <th>会心ダメ&lpar;%&rpar;</th>
                     </tr>
                     <tr>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="calculator">
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>通常1段目</th>
+                        <th>通常2段目</th>
+                        <th>通常3段目</th>
+                        <th>元素スキル</th>
+                        <th>元素爆発</th>
+                    </tr>
+                    <tr>
+                        <th>非会心</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                    </tr>
+                    <tr>
+                        <th>会心</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                        <th>N/A</th>
+                    </tr>
+                    <tr>
+                        <th>期待値</th>
+                        <th>N/A</th>
                         <th>N/A</th>
                         <th>N/A</th>
                         <th>N/A</th>
