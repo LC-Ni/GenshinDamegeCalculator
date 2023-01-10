@@ -13,7 +13,12 @@
         let ncmb = new NCMB(appKey, clientKey);
         let element = [
             ["Character", "menu-character"],
-            ["Weapons", "menu-weapon"]
+            ["Weapons", "menu-weapon"],
+            ["Artifacts", "menu-artifact-1"],
+            ["Artifacts", "menu-artifact-2"],
+            ["Artifacts", "menu-artifact-3"],
+            ["Artifacts", "menu-artifact-4"],
+            ["Artifacts", "menu-artifact-5"]
         ];
 
         function fetchAll(db) {
@@ -202,35 +207,35 @@
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-1">
+                    <select required id="menu-artifact-1" onchange="totalResults()">
                         <script>fetchAllMenu("Artifacts", "花")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-2">
+                    <select required id="menu-artifact-2" onchange="totalResults()">
                         <script>fetchAllMenu("Artifacts", "羽")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-3">
+                    <select required id="menu-artifact-3" onchange="totalResults()">
                         <script>fetchAllMenu("Artifacts", "砂")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-4">
+                    <select required id="menu-artifact-4" onchange="totalResults()">
                         <script>fetchAllMenu("Artifacts", "杯")</script>
                     </select>
                 </div>
             </div>
             <div>
                 <div class="menu-select menu">
-                    <select required id="menu-artifact-5">
+                    <select required id="menu-artifact-5" onchange="totalResults()">
                         <script>fetchAllMenu("Artifacts", "冠")</script>
                     </select>
                 </div>
